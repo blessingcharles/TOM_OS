@@ -2,8 +2,8 @@
 #include "stdarg.h"
 #include "print.h"
 #include "stdint.h"
-
-static struct TomScreenBuffer screen_buffer = {(char*)0xb8000,0,0};
+#include "TomMemory.h"
+static struct TomScreenBuffer screen_buffer = {(char*)P2V(0xb8000),0,0};
 
 static int udecimal_to_string(char *buffer, int position, uint64_t digits);
 static int decimal_to_string(char *buffer, int position, int64_t digits);

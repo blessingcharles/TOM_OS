@@ -10,6 +10,7 @@ void kernel_main(void){
     init_idt();
     printbanner();
     Get_Tom_Memory();
+    init_kvm();
 
    // ASSERT(0);
 

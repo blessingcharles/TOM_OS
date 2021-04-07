@@ -32,6 +32,7 @@ global vector19
 global vector32
 global vector33
 global vector39
+global load_cr3
 global eoi
 global read_isr
 global load_idt
@@ -196,8 +197,13 @@ load_idt:
     lidt [rdi]
     ret
 
+load_cr3:
+    mov rax,rdi
+    mov cr3,rax
+    ret   
 ;for keyboard handler
 in_byte:
     mov rdx,rdi
     in al,dx
     ret
+
