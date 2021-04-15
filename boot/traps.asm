@@ -32,10 +32,13 @@ global vector19
 global vector32
 global vector33
 global vector39
+global sysint
 global load_cr3
 global eoi
 global read_isr
 global load_idt
+global pstart
+global dummyend
 global in_byte
 
 Trap:
@@ -55,8 +58,8 @@ Trap:
     push r14
     push r15
 
-    inc byte[0xb8010]
-    mov byte[0xb8011],0xe
+    ; inc byte[0xb8010]
+    ; mov byte[0xb8011],0xe
 
     mov rdi,rsp
     call handler
@@ -201,9 +204,21 @@ load_cr3:
     mov rax,rdi
     mov cr3,rax
     ret   
+
+pstart:
+    mov rsp,rdi
+    jmp TrapReturn
+
+
+sysint:
+    push 0
+    push 0x80
+    jmp Trap
 ;for keyboard handler
 in_byte:
     mov rdx,rdi
     in al,dx
     ret
 
+dummyend:
+    jmp dummyend

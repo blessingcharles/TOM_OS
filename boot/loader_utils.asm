@@ -29,6 +29,24 @@ loadkernel:
     popa
     ret
 
+loaduser:
+   pusha
+
+    mov si,readblock
+    mov word[si],0x10       ;size 16 bytes   
+    mov word[si+2],10      ;10 sectors for user in img
+    mov word[si+4],0        ;offset
+    mov word[si+6],0x2000   ; segment 1mb
+    mov dword[si+8],106       ;lba of 106 which means sector 107 in disk 
+    mov dword[si+0xc],0      ; higher lba sets to 0    
+    mov dl,[driveid]
+    mov ah,0x42             
+    int 0x13
+    jz NotSupported
+
+    popa
+    ret
+
 longmodetests:
     pusha
 

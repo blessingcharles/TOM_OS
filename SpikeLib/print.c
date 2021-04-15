@@ -9,7 +9,7 @@ static int udecimal_to_string(char *buffer, int position, uint64_t digits);
 static int decimal_to_string(char *buffer, int position, int64_t digits);
 static int hex_to_string(char *buffer, int position, uint64_t digits);
 static int read_string(char *buffer, int position, const char *string);
-static void write_screen(const char *buffer, int size, struct TomScreenBuffer *sb, char color);
+void write_screen(const char *buffer, int size, char color);
 
 static int udecimal_to_string(char *buffer, int position, uint64_t digits)
 {
@@ -74,11 +74,11 @@ static int read_string(char *buffer, int position, const char *string)
     return index;
 }
 
-static void write_screen(const char *buffer, int size, struct TomScreenBuffer *sb, char color)
+void write_screen(const char *buffer, int size,  char color)
 {
+    struct TomScreenBuffer *sb = &screen_buffer ;
     int column = sb->column;
     int row = sb->row;
-
     for (int i = 0; i < size; i++) {   
         //implementing screen scrolling     
         if (row >= 25) {
@@ -151,7 +151,7 @@ int printk(char colorcode,const char *format, ...)
         }     
     }
 
-    write_screen(buffer, buffer_size, &screen_buffer, colorcode);
+    write_screen(buffer, buffer_size, colorcode);
     va_end(args);
 
     return buffer_size;

@@ -39,7 +39,7 @@ typedef PD* PDPTR;
 #define PTE_ADDR(p) (((uint64_t)p >> 21) << 21)
 
 void Get_Tom_Memory(void);
-void init_kvm(void);
+void init_Tom_Virtual_Memory(void);
 void switch_vm(uint64_t map);
 void* kalloc(void);
 void kfree(uint64_t v);

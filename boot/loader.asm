@@ -6,6 +6,7 @@ start:
     call longmodetests
     ;loading kernel
     call loadkernel
+    call loaduser
     call printnewline
     mov bx,loadermsg
     call printc

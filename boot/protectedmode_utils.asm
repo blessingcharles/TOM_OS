@@ -72,6 +72,7 @@ LMEntry:
     mov byte[0xb8001],0xa
 
     ;changing the IP to kernel 
+    cld 
     mov rdi,0x200000
     mov rsi,0x10000     ;copying the kernel from 0x10000 to 0x200000
     mov rcx,51200/8     ; counter for copying 8 bytes at a time 512 bytes of each 100 sectors kernel

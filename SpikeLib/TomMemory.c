@@ -55,19 +55,14 @@ void Get_Tom_Memory(void){
 
 }
 
-
 static void free_region(uint64_t v, uint64_t e)
 {
-    for (uint64_t start = PA_UP(v); start+PAGE_SIZE <= e; start += PAGE_SIZE) {  
-        //should be 1gb cuz we use 1gb of ram      
-        if (start+PAGE_SIZE <= 0xffff800040000000) {     
-
-            free_page_count++;     
-            kfree(start);
+    for (uint64_t start = PA_UP(v); start+PAGE_SIZE <= e; start += PAGE_SIZE) {        
+        if (start+PAGE_SIZE <= 0xffff800040000000) {            
+           kfree(start);
         }
     }
 }
-
 
 void kfree(uint64_t v)
 {
@@ -170,8 +165,7 @@ bool map_pages(uint64_t map, uint64_t v, uint64_t e, uint64_t pa, uint32_t attri
 
 void switch_vm(uint64_t map)
 {
-    uint64_t pmap = V2P(map);
-    load_cr3(pmap);   
+    load_cr3(V2P(map));   
 }
 
 uint64_t setup_kvm(void)
@@ -186,18 +180,15 @@ uint64_t setup_kvm(void)
         }
     }
     return page_map;
-    
 }
 
-void init_kvm(void)
+void init_Tom_Virtual_Memory(void)
 {
     uint64_t page_map = setup_kvm();
     ASSERT(page_map != 0);
     switch_vm(page_map);
     printk(0xf,"memory manager is working now");
-
 }
-
 
 bool setup_uvm(uint64_t map, uint64_t start, int size)
 {
@@ -283,4 +274,3 @@ void free_vm(uint64_t map)
     free_pdpt(map);
     free_pml4t(map);
 }
-

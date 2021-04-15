@@ -1,4 +1,6 @@
+
 section .data 
+    global Tss
     ;---------  
     ;; GDT64
     GDT64: 
