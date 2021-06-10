@@ -26,7 +26,7 @@ struct Process {
 	struct TrapFrame *tf;
 };
 
-//Ready list for the process
+//Ready wait kill list for the process
 struct ProcessControl{
 
 	struct Process *current_process;

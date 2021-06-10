@@ -1,12 +1,12 @@
-#include "lib.h"
+#include "../Tlibc/lib.h"
 #include "stdint.h"
 
 void main(void){
 
+   //init daemon
+      
     while(1){
-        //the process will do cleanup by wait systemcall
         waitu();
     }
-  
     return ;
 }

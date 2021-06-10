@@ -76,12 +76,14 @@ void init_process(void)
     struct ProcessControl *process_control;
     struct Process *proc ;
     struct HeadList *list;
+
+    //initialising 3 process now
     uint64_t addr[3] = {0x20000,0x30000,0x40000};
     
     process_control = get_pc();
     list = &process_control->ready_list ;
 
-    //initialising topsy and nibbles process
+    //initialising init topsy and nibbles process
     for(uint8_t i = 0 ; i < 3 ; i++){
         proc = find_unused_process();
         set_process_entry(proc,addr[i]);

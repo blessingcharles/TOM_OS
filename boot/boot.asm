@@ -2,7 +2,7 @@
 [ORG 0x7c00]                ; LOADED IN MBR RAM ADDRESS 
 
 ;MBR[512] = bootcode[446] + partition entries[64] + magic bytes[0xaa55]
-
+;bios loads the mbr at 0x7c00
 ;-----------------------------------------------------------------------------
 ; boot code 446 bytes
 ; INITIAL SET UP FOR REGISTERS

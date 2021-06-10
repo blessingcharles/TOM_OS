@@ -88,9 +88,9 @@ section .text
         out 0x21,al
         out 0xa1,al
 
-        mov al,11111100b
+        mov al,11111100b    ; pic masking all except keyboard and timer
         out 0x21,al
-        mov al,11111111b
+        mov al,11111111b    ; masking all the slave interrupts
         out 0xa1,al
 
         mov rax,K_main

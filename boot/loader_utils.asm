@@ -3,6 +3,9 @@
 ;  ########## LOADER UTILS ##########
 
 ;   loadkernel
+;   loadinit
+;   loaduser1
+;   loaduser2
 ;   longmodetests
 ;   printc
 ;   printnewline
@@ -102,6 +105,7 @@ longmodetests:
     ret
 
 ;get memory map via the bios routine
+;e820 is shorthand for the facility by which the BIOS of x86-based computer systems reports the memory map
 GetMemoryMap:
     pusha
 
@@ -116,7 +120,7 @@ GetMemoryMap:
     
     ;loop through to get all blocks of memory map 
     GetMemoryLoopInfo:
-        add edi,20              ;storing the next block at (0x9014) and looping
+        add edi,20              ;storing the next block at (0x901c) and looping
         inc dword[0x9000]
         test ebx,ebx                
         jz GetMemoryDone

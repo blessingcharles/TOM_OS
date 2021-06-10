@@ -1,4 +1,4 @@
-#include "lib.h"
+#include "../Tlibc/lib.h"
 #include "stdint.h"
 #include "console.h"
 
@@ -8,7 +8,7 @@ void init_all_commands(){
 
     cmd_list[HELP_CMD] = help_cmd ;
     cmd_list[TOTAL_MEM_CMD] = cmd_get_total_memory ;
-    
+    cmd_list[OS_INFO_CMD] = os_info_cmd ;
 }
 
 static int read_cmd(char *buffer)
@@ -45,8 +45,11 @@ static int parse_cmd(char *buffer, int buffer_size)
     if(buffer_size == 4 && (!memcmp(HELP_STR,buffer,4))){
         cmd = HELP_CMD;
     }
-    if (buffer_size == 8 && (!memcmp(TOTAL_MEM_STR, buffer, 8))) {
+    else if (buffer_size == 8 && (!memcmp(TOTAL_MEM_STR, buffer, 8))) {
         cmd = TOTAL_MEM_CMD;
+    }
+    else if(buffer_size == 6 && (!memcmp(OS_INFO_STR,buffer,6))){
+        cmd = OS_INFO_CMD;
     }
 
     return cmd;
@@ -62,6 +65,10 @@ static void execute_cmd(int cmd)
         case(TOTAL_MEM_CMD):
             cmd_list[TOTAL_MEM_CMD]();
             break ;
+        case(OS_INFO_CMD):
+            cmd_list[OS_INFO_CMD]();
+            break;
+
         default:
             break ;
     }
@@ -70,12 +77,13 @@ static void execute_cmd(int cmd)
 
 int console(void)
 {
-    char buffer[80] = { 0 };
+    
     int buffer_size = 0;
     int cmd = 0;
     init_all_commands();
 
     while (1) {
+        char buffer[80] = { 0 };
         printf("\n[TOM OS]#> ");
         buffer_size = read_cmd(buffer);
 
