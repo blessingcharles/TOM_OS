@@ -18,7 +18,7 @@ loadkernel:
     mov word[si],0x10       ;size 16 bytes   
     mov word[si+2],100      ;100 sectors for kernel in img
     mov word[si+4],0        ;offset
-    mov word[si+6],0x1000   ; segment 1mb
+    mov word[si+6],0x1000   ; segment[0x1000] =  0x1000*0x10
     mov dword[si+8],6       ;lba of 6 which means sector 7 in disk  CHS[007]  
     mov dword[si+0xc],0      ; higher lba sets to 0    
     mov dl,[driveid]
@@ -29,15 +29,34 @@ loadkernel:
     popa
     ret
 
-loaduser:
+loaduser1:
    pusha
 
     mov si,readblock
     mov word[si],0x10       ;size 16 bytes   
     mov word[si+2],10      ;10 sectors for user in img
     mov word[si+4],0        ;offset
-    mov word[si+6],0x2000   ; segment 1mb
+    mov word[si+6],0x2000   ; segment 0x2000
     mov dword[si+8],106       ;lba of 106 which means sector 107 in disk 
+    mov dword[si+0xc],0      ; higher lba sets to 0    
+    mov dl,[driveid]
+    mov ah,0x42             
+    int 0x13
+    jz NotSupported
+
+    popa
+    ret
+
+
+loaduser2:
+   pusha
+
+    mov si,readblock
+    mov word[si],0x10       ;size 16 bytes   
+    mov word[si+2],10      ;10 sectors for user in img
+    mov word[si+4],0        ;offset
+    mov word[si+6],0x3000   ; segment 0x3000
+    mov dword[si+8],116       ;lba of 106 which means sector 107 in disk 
     mov dword[si+0xc],0      ; higher lba sets to 0    
     mov dl,[driveid]
     mov ah,0x42             
@@ -105,7 +124,7 @@ TestA20:
     mov word[ds:0x7c00],0xa200 ;0:0x7c00       = 0*16    [shift by 4bits] + 0x7c00 = 0x7c00         
     cmp word[es:0x7c10],0xa200 ;0xffff:0x7c10  = 0xffff*16[shift by 4bits] + 0x7c10= 0x107c00 [if a20 if enables]
     jne TestA20done
-    ;may be if we are unlucky the junk in 0x107c00 is 0xa20 
+    ;may be if we are unlucky the junk in 0x107c00 is 0xa200 
     ; then we need to do a another test WTF case
     mov word[ds:0x7c00],0xb200
     cmp word[es:0x7c10],0xb200 

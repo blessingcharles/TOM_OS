@@ -38,8 +38,10 @@ global eoi
 global read_isr
 global load_idt
 global pstart
+global swap
 global dummyend
 global in_byte
+global TrapReturn
 
 Trap:
     push rax
@@ -81,8 +83,8 @@ TrapReturn:
     pop	rbx
     pop	rax       
 
-    add rsp,16
-    iretq
+    add rsp,16      ;removing the error code and interrupt index
+    iretq           ;IRETQ restores rip, cs, rflags, rsp, and ss from interrupts
 
 vector0:
     push 0          ; error code
@@ -184,6 +186,12 @@ vector39:
     push 39
     jmp Trap
 
+
+sysint:
+    push 0
+    push 0x80
+    jmp Trap
+
 eoi:
     mov al,0x20
     out 0x20,al
@@ -205,15 +213,33 @@ load_cr3:
     mov cr3,rax
     ret   
 
+;process starts
 pstart:
     mov rsp,rdi
     jmp TrapReturn
 
+;process scheduling swap
+swap:
+    push rbx
+    push rbp
+    push r12
+    push r13
+    push r14
+    push r15
 
-sysint:
-    push 0
-    push 0x80
-    jmp Trap
+    ;change kernel stack pointer in context of pcb from one process to another while process switching
+    mov [rdi],rsp
+    mov rsp,rsi 
+
+    pop r15
+    pop r14
+    pop r13
+    pop r12
+    pop rbp
+    pop rbx
+
+    ret
+
 ;for keyboard handler
 in_byte:
     mov rdx,rdi

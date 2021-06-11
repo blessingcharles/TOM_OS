@@ -10,6 +10,7 @@ Handle each interrupt request via handler procedure with switch statement
 #include "../ButchDrivers/keyboard.h"
 #include "../SpikeLib/print.h"
 #include "../SpikeLib/syscall.h"
+#include "../SpikeLib/process.h"
 
 static struct IdtPtr idt_pointer;
 static struct IdtEntry vectors[256];
@@ -47,6 +48,7 @@ void init_idt(void)
     define_entry(&vectors[32],(uint64_t)vector32,0x8e);
     //define_entry(&vectors[33],(uint64_t)vector33,0x8e);
     define_entry(&vectors[39],(uint64_t)vector39,0x8e);
+
 // users ring3 interrupts
     define_entry(&vectors[0x80],(uint64_t)sysint,0xee);
 
@@ -75,10 +77,16 @@ void handler(struct TrapFrame *tf)
             }
             break;
         case 0x80:
-            system_call(tf);
+            system_call(tf); // in ../SPikelib/syscall.c
             break;
         default:
             printk(0xf,"trapno : %d , RING : %d , errorcode : %d",tf->trapno,(tf->cs && 3),tf->errorcode);
             while (1) { }
     }
+    
+    //for timer interrupts we schedulling new process
+    if(tf->trapno == 32){
+        yield_tomprocess();
+    }
+
 }

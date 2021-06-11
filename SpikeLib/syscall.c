@@ -18,7 +18,7 @@ void init_system_call(void)
 
 void system_call(struct TrapFrame *tf)
 {
-    int64_t i = tf->rax;
+    int64_t i = tf->rax;              //storing the software interrupt number
     int64_t param_count = tf->rdi;
     int64_t *argptr = (int64_t*)tf->rsi;
 
