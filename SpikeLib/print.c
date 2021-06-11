@@ -79,6 +79,8 @@ void write_screen(const char *buffer, int size,  char color)
     struct TomScreenBuffer *sb = &screen_buffer ;
     int column = sb->column;
     int row = sb->row;
+
+    //25*80 screen
     for (int i = 0; i < size; i++) {   
         //implementing screen scrolling     
         if (row >= 25) {

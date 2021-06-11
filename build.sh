@@ -44,7 +44,8 @@ dd if=$path1/loader.bin of=thomas.img count=5 seek=1 bs=512 conv=notrunc
 dd if=$path1/kernel.bin of=thomas.img count=100 seek=6 bs=512 conv=notrunc
 
 # users process
-dd if=$path1/user1.bin of=thomas.img count=10 seek=106 bs=512 conv=notrunc
-dd if=$path1/user2.bin of=thomas.img count=10 seek=116 bs=512 conv=notrunc
+dd if=$path1/init_process.bin of=thomas.img count=10 seek=106 bs=512 conv=notrunc
+dd if=$path1/user1.bin of=thomas.img count=10 seek=116 bs=512 conv=notrunc
+dd if=$path1/user2.bin of=thomas.img count=10 seek=126 bs=512 conv=notrunc
 
 

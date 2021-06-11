@@ -4,3 +4,5 @@ cd topsy
 ./uBuild.sh
 cd ../nibbles
 ./uBuild.sh
+cd ../init_process
+./uBuild.sh

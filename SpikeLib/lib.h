@@ -18,10 +18,11 @@ struct List{
     */
 struct HeadList{
 
-    struct List *next; //current process
+    struct List *next; //next process
     struct List *tail; //last process   
 };
 
+// from lib.asm simple memory functions
 void memset(void* buffer,char value,int size);
 void memmove(void* dst,void *src,int size);
 void memcpy(void* dst,void* src,int size);
@@ -30,6 +31,7 @@ int memcmp(void* src1,void* src2,int size);
 //process scheduling lib utils
 void append_list_tail(struct HeadList *list , struct List *item);
 struct List *remove_list_head(struct HeadList *list);
+struct List* remove_list(struct HeadList *list, int wait);
 bool is_list_empty(struct HeadList *list);
 
 

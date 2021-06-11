@@ -6,6 +6,7 @@ start:
     call longmodetests
     ;loading kernel
     call loadkernel
+    call loadinit
     call loaduser1
     call loaduser2
     

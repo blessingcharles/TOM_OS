@@ -1,6 +1,8 @@
 #include "keyboard.h"
 #include "../SpikeLib/print.h"
 
+// driver doesnt support functional keys
+
 static unsigned char shift_code[256] = {
     [0x2A] = SHIFT, [0x36] = SHIFT, [0xAA] = SHIFT, [0xB6] = SHIFT
 };

@@ -14,7 +14,7 @@ Handle each interrupt request via handler procedure with switch statement
 
 static struct IdtPtr idt_pointer;
 static struct IdtEntry vectors[256];
-
+static uint64_t ticks; //timer ticks
 // procedure for defining each entries
 static void define_entry(struct IdtEntry *entry, uint64_t addr, uint8_t attribute)
 {
@@ -57,12 +57,26 @@ void init_idt(void)
     load_idt(&idt_pointer);
 }
 
+uint64_t get_ticks(void)
+{
+    return ticks;
+}
+
+static void timer_handler(void)
+{
+    ticks++;
+    wake_up(-1);
+}
+
 void handler(struct TrapFrame *tf)
 {
     unsigned char isr_value;
 
     switch (tf->trapno) {
+
         case 32:
+            //every 10 ms
+            timer_handler();
             eoi();
             break;
 
@@ -80,8 +94,16 @@ void handler(struct TrapFrame *tf)
             system_call(tf); // in ../SPikelib/syscall.c
             break;
         default:
-            printk(0xf,"trapno : %d , RING : %d , errorcode : %d",tf->trapno,(tf->cs && 3),tf->errorcode);
-            while (1) { }
+            if((tf->cs & 3) == 3){
+                //if user process cause exception
+                printk(0xf,"trapno : %d , RING : %d , errorcode : %d\n",tf->trapno,(tf->cs & 3),tf->errorcode);
+                exit();
+            }
+            else{
+                printk(0xf,"trapno : %d , RING : %d , errorcode : %d",tf->trapno,(tf->cs & 3),tf->errorcode);
+                while (1) { }
+            }
+          
     }
     
     //for timer interrupts we schedulling new process

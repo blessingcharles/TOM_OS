@@ -76,12 +76,13 @@ void init_process(void)
     struct ProcessControl *process_control;
     struct Process *proc ;
     struct HeadList *list;
-    uint64_t addr[2] = {0x20000,0x30000};
+    uint64_t addr[3] = {0x20000,0x30000,0x40000};
     
     process_control = get_pc();
     list = &process_control->ready_list ;
 
-    for(uint8_t i = 0 ; i < 2 ; i++){
+    //initialising topsy and nibbles process
+    for(uint8_t i = 0 ; i < 3 ; i++){
         proc = find_unused_process();
         set_process_entry(proc,addr[i]);
         append_list_tail(list,(struct List *)proc);
@@ -104,7 +105,7 @@ void launch(void)
 
     set_tss(process);
     switch_vm(process_table->page_map);   //loading the pagemap in cr3
-//printk(0xf,"\n\n ))))))))))))) \n\n\n");
+    
     pstart(process->tf); // in traps.asm from the trap frame the cpl is taken from cs register
 
 }
@@ -155,4 +156,90 @@ void yield_tomprocess(void)
     process->state = PROC_READY;
     append_list_tail(list, (struct List*)process);
     schedule_tom_processes();
+}
+
+
+//add the process in waitlist and schedule next process
+void sleep(int wait)
+{
+    struct ProcessControl *process_control;
+    struct Process *process;
+    
+    process_control = get_pc();
+    process = process_control->current_process;
+    process->state = PROC_SLEEP;
+    process->wait = wait;
+
+    append_list_tail(&process_control->wait_list, (struct List*)process);
+    schedule_tom_processes();
+}
+
+//wake_up the sleeping process to check if the waiting time is over
+void wake_up(int wait)
+{
+    struct ProcessControl *process_control;
+    struct Process *process;
+    struct HeadList *ready_list;
+    struct HeadList *wait_list;
+
+    process_control = get_pc();
+    ready_list = &process_control->ready_list;
+    wait_list = &process_control->wait_list;
+    process = (struct Process*)remove_list(wait_list, wait);
+
+    while (process != NULL) {       
+        process->state = PROC_READY;
+
+        //we are not prioritizing any io wait state and append to head
+        //else we just append it to the tail which is not a huge prblm in this small os
+        append_list_tail(ready_list, (struct List*)process);
+        process = (struct Process*)remove_list(wait_list, wait);
+    }
+}
+
+
+
+void exit(void)
+{
+    struct ProcessControl *process_control;
+    struct Process* process;
+    struct HeadList *list;
+
+    process_control = get_pc();
+    process = process_control->current_process;
+    process->state = PROC_KILLED;
+
+    list = &process_control->kill_list;
+    append_list_tail(list, (struct List*)process);
+
+    //wake up the init process if sleeeping
+    wake_up(1);
+    schedule_tom_processes();
+}
+
+
+void wait(void)
+{
+    struct ProcessControl *process_control;
+    struct Process *process;
+    struct HeadList *list;
+
+    process_control = get_pc();
+    list = &process_control->kill_list;
+
+    while (1) {
+        if (!is_list_empty(list)) {
+            process = (struct Process*)remove_list_head(list); 
+            ASSERT(process->state == PROC_KILLED);
+
+            //freeing the user process
+            kfree(process->stack);
+            free_vm(process->page_map);            
+            memset(process, 0, sizeof(struct Process));   
+        }
+        else {
+        //sleep the init process if cleanup is finished
+            sleep(1);
+        }
+    }
 }

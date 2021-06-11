@@ -242,7 +242,7 @@ swap:
 
 ;for keyboard handler
 in_byte:
-    mov rdx,rdi
+    mov rdx,rdi         ;0x60 port for getting scan codes
     in al,dx
     ret
 

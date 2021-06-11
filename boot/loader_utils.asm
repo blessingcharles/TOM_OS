@@ -29,8 +29,8 @@ loadkernel:
     popa
     ret
 
-loaduser1:
-   pusha
+loadinit:
+    pusha
 
     mov si,readblock
     mov word[si],0x10       ;size 16 bytes   
@@ -38,6 +38,24 @@ loaduser1:
     mov word[si+4],0        ;offset
     mov word[si+6],0x2000   ; segment 0x2000
     mov dword[si+8],106       ;lba of 106 which means sector 107 in disk 
+    mov dword[si+0xc],0      ; higher lba sets to 0    
+    mov dl,[driveid]
+    mov ah,0x42             
+    int 0x13
+    jz NotSupported
+
+    popa
+    ret
+
+loaduser1:
+   pusha
+
+    mov si,readblock
+    mov word[si],0x10       ;size 16 bytes   
+    mov word[si+2],10      ;10 sectors for user in img
+    mov word[si+4],0        ;offset
+    mov word[si+6],0x3000   ; segment 0x3000
+    mov dword[si+8],116       ;lba of 106 which means sector 107 in disk 
     mov dword[si+0xc],0      ; higher lba sets to 0    
     mov dl,[driveid]
     mov ah,0x42             
@@ -55,8 +73,8 @@ loaduser2:
     mov word[si],0x10       ;size 16 bytes   
     mov word[si+2],10      ;10 sectors for user in img
     mov word[si+4],0        ;offset
-    mov word[si+6],0x3000   ; segment 0x3000
-    mov dword[si+8],116       ;lba of 106 which means sector 107 in disk 
+    mov word[si+6],0x4000   ; segment 0x3000
+    mov dword[si+8],126       ;lba of 106 which means sector 107 in disk 
     mov dword[si+0xc],0      ; higher lba sets to 0    
     mov dl,[driveid]
     mov ah,0x42             

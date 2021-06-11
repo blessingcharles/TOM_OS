@@ -3,15 +3,10 @@
 
 void main(void){
 
-    uint64_t timer = 0;
+    printf("process2 nibbles\n");    
+    char *p = (char *)0xffff800000200200 ;
+    *p = 1 ;
+      
 
-    while(1){
-        if(timer % 10000000 == 0){
-            printf("process2 %d\n",timer);
-            
-        }
-        timer++ ;
-    }
-  
     return ;
 }

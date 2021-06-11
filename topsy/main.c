@@ -3,14 +3,13 @@
 
 void main(void){
 
-    uint64_t timer = 0;
-
+    int64_t timer = 0 ;
     while(1){
-        if(timer % 10000000 == 0){
-            printf("process1 %d\n",timer);
-            
-        }
-        timer++ ;
+        
+        if(timer %100000000 == 0)
+            printf("process1 im topsy \n");   
+
+        timer++ ;   
     }
   
     return ;
