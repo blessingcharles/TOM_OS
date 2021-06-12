@@ -6,7 +6,8 @@ global writeu
 global sleepu
 global exitu
 global waitu
-
+global keyboard_readu
+global get_total_memoryu
 writeu:
     sub rsp,16
     xor eax,eax         ;rax stores the system call number
@@ -49,4 +50,18 @@ waitu:
 
     int 0x80
 
+    ret
+
+keyboard_readu:
+    mov eax,4
+    xor rdi,rdi 
+
+    int 0x80
+    ret
+
+get_total_memoryu:
+    mov eax,5
+    xor rdi,rdi 
+
+    int 0x80
     ret

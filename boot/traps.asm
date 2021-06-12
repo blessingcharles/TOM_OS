@@ -169,23 +169,23 @@ vector19:
     push 19	
     jmp Trap
 
+; timer handler
 vector32:
     push 0
     push 32
     jmp Trap
 
+;keyboard strokes handler
 vector33:
-    mov byte[0xb8010],'X'
-    mov byte[0xb8011],0xe
     push 0
     push 33
     jmp Trap
 
+;spurious interrupt
 vector39:
     push 0
     push 39
     jmp Trap
-
 
 sysint:
     push 0

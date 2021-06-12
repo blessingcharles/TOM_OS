@@ -1,10 +1,10 @@
 section .text
 global start
-extern main
+extern console
 extern exitu
 ;default starting for all elf binaries else defaulted to 0x400000
 start:
-    call main
+    call console
     call exitu
     jmp $
 

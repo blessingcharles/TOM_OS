@@ -3,7 +3,6 @@
 
 Here we initialize only 22 idt entries of total 256 and load the idt table
 Handle each interrupt request via handler procedure with switch statement
-
 */
 
 #include "traps.h"
@@ -46,7 +45,7 @@ void init_idt(void)
     define_entry(&vectors[18],(uint64_t)vector18,0x8e);
     define_entry(&vectors[19],(uint64_t)vector19,0x8e);
     define_entry(&vectors[32],(uint64_t)vector32,0x8e);
-    //define_entry(&vectors[33],(uint64_t)vector33,0x8e);
+    define_entry(&vectors[33],(uint64_t)vector33,0x8e);
     define_entry(&vectors[39],(uint64_t)vector39,0x8e);
 
 // users ring3 interrupts
@@ -80,10 +79,10 @@ void handler(struct TrapFrame *tf)
             eoi();
             break;
 
-        // case 33:
-        //     keyboard_handler();
-        //     eoi();
-        //     break;
+        case 33:
+            keyboard_handler();
+            eoi();
+            break;
         case 39:
             isr_value = read_isr();
             if ((isr_value&(1<<7)) != 0) {

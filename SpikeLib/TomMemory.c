@@ -13,12 +13,18 @@ static uint64_t memory_end;
 
 static void free_region(uint64_t v, uint64_t e);
 
+static uint64_t total_mem = 0;
+
+uint64_t get_total_memory(void){
+   
+    return total_mem/1024/1024 ;
+}
 
 //getting the memory map and collecting free regions under 1 gb
 void Get_Tom_Memory(void){
 
     int32_t count = *(int32_t*)0x9000;
-    uint64_t total_mem = 0;
+    
     struct TomMemoryMap *mem_map = (struct TomMemoryMap*)0x9008;	
     int free_region_count = 0;
 
@@ -52,8 +58,7 @@ void Get_Tom_Memory(void){
     }
 
     memory_end = (uint64_t)free_memory.next+PAGE_SIZE;
-    printk(0xf,"%x\n",memory_end);
-    printk(0xf,"FREE PAGE COUNT[ 2MB ] = %d\n",free_page_count);
+   
 
 }
 
@@ -215,7 +220,7 @@ void init_Tom_Virtual_Memory(void)
 
     //storing pml4 base addr in cr3 register
     switch_vm(page_map);
-    printk(0xf,"memory manager is working now");
+   // printk(0xf,"memory manager is working now\n\n");
 }
 
 //user virtual memory mapping

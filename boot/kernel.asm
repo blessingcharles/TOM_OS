@@ -88,7 +88,7 @@ section .text
         out 0x21,al
         out 0xa1,al
 
-        mov al,11111110b
+        mov al,11111100b
         out 0x21,al
         mov al,11111111b
         out 0xa1,al

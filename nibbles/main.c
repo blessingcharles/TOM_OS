@@ -3,10 +3,10 @@
 
 void main(void){
 
-    printf("process2 nibbles\n");    
-    char *p = (char *)0xffff800000200200 ;
-    *p = 1 ;
+    // printf("process2 nibbles\n");    
+    // char *p = (char *)0xffff800000200200 ;
+    // *p = 1 ;
       
-
+    while(1){}
     return ;
 }
